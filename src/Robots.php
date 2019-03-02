@@ -5,16 +5,6 @@ use Closure;
 class Robots implements IRobot
 {
     /**
-     * Выполните обратный вызов для каждого пакетного агента.
-     *
-     * @param callable| Closure $closure
-     */
-    public function testEach(\Closure $closure)
-    {
-        $this->storage->each($closure);
-    }
-
-    /**
      * Robots parser
      *
      * @var RobotsParserWrap
@@ -208,6 +198,11 @@ class Robots implements IRobot
      */
     public function update(string $path = 'robots.txt')
     {
+        if( file_exists($path) )
+        {
+            unlink($path);
+        }
+
         file_put_contents($path, $this->render());
     }
 

@@ -9,13 +9,6 @@ use Closure;
 interface IRobot
 {
     /**
-     * Выполните обратный вызов для каждого пакетного агента.
-     *
-     * @param callable| Closure $closure
-     */
-    public function testEach(\Closure $closure);
-
-    /**
      * Добавить хост в файл robots.txt.
      *
      * @param string $host

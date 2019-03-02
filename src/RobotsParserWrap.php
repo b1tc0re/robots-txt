@@ -2,18 +2,6 @@
 
 class RobotsParserWrap extends \RobotsTxtParser
 {
-
-    public function each(\Closure $closure)
-    {
-        if($closure instanceof \Closure)
-        {
-            $closure($this);
-            file_put_contents('closure', '');
-        }
-
-        file_put_contents('closure', $closure instanceof \Closure ? '1' : '0');
-    }
-
     /**
      * Add new rule for user agent
      * @param string $agent
@@ -33,7 +21,7 @@ class RobotsParserWrap extends \RobotsTxtParser
         {
             if( array_key_exists($directoryRule, $rules) )
             {
-                if( !in_array($directoryRule, $rules[$directoryRule]) )
+                if( !in_array($directory, $rules[$directoryRule]) )
                 {
                     $this->rules[$agent][$directoryRule][] = $directory;
                 }
@@ -66,7 +54,7 @@ class RobotsParserWrap extends \RobotsTxtParser
         {
             if( array_key_exists($directoryRule, $rules) )
             {
-                if( !in_array($directoryRule, $rules[$directoryRule]) )
+                if( !in_array($directory, $rules[$directoryRule]) )
                 {
                     $this->rules[$userAgent][$directoryRule][] = $directory;
                 }
@@ -76,6 +64,7 @@ class RobotsParserWrap extends \RobotsTxtParser
                 $this->rules[$userAgent][$directoryRule][] = $directory;
             }
         }
+
 
         return $this;
     }
