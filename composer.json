@@ -15,7 +15,8 @@
     }
   ],
   "require": {
-    "php": "^7.0"
+    "php": "^7.0",
+    "t1gor/robots-txt-parser": "v0.2.4"
   },
   "require-dev": {
     "phpunit/phpunit": "8.0.4"

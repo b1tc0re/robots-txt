@@ -9,14 +9,11 @@ use Closure;
 interface IRobot
 {
     /**
-     * Добавить комментарий к robots.txt.
+     * Выполните обратный вызов для каждого пакетного агента.
      *
-     * @param string|array $comment
-     * @return IRobot
-     *
-     * @throws ExceptionRobot
+     * @param callable| Closure $closure
      */
-    public function comment(...$comment) : IRobot;
+    public function testEach(\Closure $closure);
 
     /**
      * Добавить хост в файл robots.txt.
@@ -27,75 +24,81 @@ interface IRobot
     public function host($host) : IRobot;
 
     /**
-     * Добавить правило запрета в файл robots.txt.
+     * Добавить ссылку на файл SiteMap в файл robots.txt.
      *
-     * @param string|array $directories
+     * @param string|array $siteMap
      * @return IRobot
      *
-     * @throws ExceptionRobot
+     */
+    public function siteMap($siteMap) : IRobot;
+
+    /**
+     * Добавить GET-параметры (например, идентификаторы сессий, пользователей) или метки (напрмиер, UTM), которые не влияют на их содержимое.
+     *
+     * @param array $params
+     * @return $this
+     */
+    public function cleanParams(array $params) : IRobot;
+
+    /**
+     * Задать поисковым роботу минимальный период времени (в секундах)
+     *
+     * @param float|int $seconds
+     * @param string $type
+     * @return IRobot
+     */
+    public function crawlDelay($seconds, $type = 'crawl-delay') : IRobot;
+
+    /**
+     * Задать поисковому роботу минимальный период времени (в секундах)
+     * @param string $agent
+     * @param int|float $seconds
+     * @param string $type
+     * @return IRobot
+     */
+    public function crawlDelayForAgent(string $agent, $seconds, $type = 'crawl-delay') : IRobot;
+
+    /**
+     * Добавить правило запрета в файл robots.txt.
+     * @param string|array ...$directories
+     * @return IRobot
      */
     public function disallow(...$directories) : IRobot;
+
+    /**
+     * Добавить правило запрета в файл robots.txt. для $agent
+     * @param string $agent
+     * @param string $directory
+     * @return IRobot
+     */
+    public function disallowForAgent(string $agent,string $directory) : IRobot;
 
     /**
      * Добавить правило разрешения в файл robots.txt.
      *
      * @param string|array $directories
      * @return IRobot
-     *
-     * @throws ExceptionRobot
      */
     public function allow(...$directories) : IRobot;
 
     /**
-     * Добавить User-agent в файл robots.txt.
-     *
-     * @param string $userAgent
+     * Добавить правило разрешения в файл robots.txt. для $agent
+     * @param string $agent
+     * @param string $directory
      * @return IRobot
      */
-    public function userAgent($userAgent) : IRobot;
-
-
-    /**
-     * Добавить ссылку на файл Sitemap в файл robots.txt.
-     *
-     * @param string|array $sitemap
-     * @return IRobot
-     *
-     * @throws ExceptionRobot
-     */
-    public function sitemap($sitemap) : IRobot;
-
+    public function allowForAgent(string $agent,string $directory) : IRobot;
 
     /**
-     * Добавить разделителя в файл robots.txt.
-     *
-     * @param int $num
-     * @return IRobot
-     */
-    public function spacer(int $num = 1) : IRobot;
-
-
-    /**
-     * Выполните обратный вызов для каждого пакетного агента.
-     *
-     * @param callable| Closure $closure
-     * @return IRobot
-     */
-    public function each(\Closure $closure) : IRobot;
-
-    /**
-     * Создает файл с записанами данными
-     *
-     * @param string|null $path
-     *
-     * @return void
-     */
-    public function create(string $path = "robots.txt");
-
-    /**
-     * Вывод сгенерированных данных в файл robots.txt.
-     *
+     * Generate the robots.txt and return content
      * @return string
      */
-    public function render() : string;
+    public function render() : string ;
+
+    /**
+     * Обновить данные robots.txt
+     *
+     * @param string $path
+     */
+    public function update(string $path = 'robots.txt');
 }

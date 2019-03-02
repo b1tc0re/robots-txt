@@ -4,60 +4,66 @@ use PHPUnit\Framework\TestCase;
 
 class RobotTest extends TestCase
 {
-    public function testSitemap()
-    {
-        $robots  = new Robot();
-        $sitemap = "sitemap.xml";
-        $this->assertStringNotContainsString($sitemap, $robots->render());
-        $robots->sitemap($sitemap);
-        $this->assertStringContainsString("Sitemap: $sitemap", $robots->render());
-    }
-
     public function testHost()
     {
-        $robots = new Robot();
-        $host   = "www.steein.ru";
-        $this->assertStringNotContainsString("Host: $host", $robots->render());
-        $robots->host($host);
-        $this->assertStringContainsString("Host: $host", $robots->render());
+        $robots  = Robots::getInstance();
+        $value = 'https://www.example.ru';
+
+        $this->assertStringNotContainsString($value, $robots->render());
+        $robots->host($value);
+        $this->assertStringContainsString($value, $robots->render());
+
+    }
+
+    public function testSiteMapHost()
+    {
+        $robots  = Robots::getInstance();
+        $value = 'https://www.example.ru/site/map.xml';
+        $this->assertStringNotContainsString($value, $robots->render());
+
+        $robots->siteMap($value);
+        $this->assertStringContainsString($value, $robots->render());
+    }
+
+    public function testCleanParams()
+    {
+        $robots  = Robots::getInstance();
+
+        $value = '&param&param2';
+        $this->assertStringNotContainsString($value, $robots->render());
+
+        $robots->cleanParams(explode('&', $value));
+        $this->assertStringContainsString($value, $robots->render());
+    }
+
+    public function testCrawlDelayHost()
+    {
+       $robots  = Robots::getInstance();
+
+       $value = 2525;
+       $this->assertStringNotContainsString($value, $robots->render());
+
+       $robots->crawlDelay($value);
+       $this->assertStringContainsString($value, $robots->render());
     }
 
     public function testDisallow()
     {
-        $robots = new Robot();
-        $path = "dir";
-        $this->assertStringNotContainsString($path,$robots->render());
-        $robots->disallow($path);
-        $this->assertStringContainsString($path, $robots->render());
+       $robots  = Robots::getInstance();
+       $value = '/path/contact';
+       $this->assertStringNotContainsString($value, $robots->render());
+
+       $robots->disallow($value);
+       $this->assertStringContainsString($value, $robots->render());
     }
 
-    public function testComment()
+    public function testAllow()
     {
-        $robots    = new Robot();
-        $comment_1 = "Steein comment";
-        $comment_2 = "Test comment";
-        $comment_3 = "Final test comment";
-        $this->assertStringNotContainsString("# $comment_1", $robots->render());
-        $this->assertStringNotContainsString("# $comment_2", $robots->render());
-        $this->assertStringNotContainsString("# $comment_3", $robots->render());
-        $robots->comment($comment_1);
-        $this->assertStringContainsString("# $comment_1", $robots->render());
-        $robots->comment($comment_2);
-        $this->assertStringContainsString("# $comment_1", $robots->render());
-        $this->assertStringContainsString("# $comment_2", $robots->render());
-        $robots->comment($comment_3);
-        $this->assertStringContainsString("# $comment_1", $robots->render());
-        $this->assertStringContainsString("# $comment_2", $robots->render());
-        $this->assertStringContainsString("# $comment_3", $robots->render());
-    }
+       $robots  = Robots::getInstance();
+       $value = '/path/contact';
+       $this->assertStringNotContainsString($value, $robots->render());
 
-    public function testSpacer()
-    {
-        $robots = new Robot();
-        $lines  = count(preg_split('/'. PHP_EOL .'/', $robots->render()));
-        $this->assertEquals(1, $lines); // Starts off with at least one line.
-        $robots->spacer();
-        $lines = count(preg_split('/'. PHP_EOL .'/', $robots->render()));
-        $this->assertEquals(2, $lines);
+       $robots->allow($value);
+       $this->assertStringContainsString($value, $robots->render());
     }
 }
