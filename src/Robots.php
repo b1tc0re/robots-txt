@@ -220,8 +220,7 @@ class Robots implements IRobot
      */
     protected function directoryNormalize(string $directory)
     {
-        $directory = rtrim($directory, '/');
-
+        $directory = '/' . trim($directory, '/') . '/';
         return $directory;
     }
 
