@@ -6,7 +6,7 @@ class RobotTest extends TestCase
 {
     public function testHost()
     {
-        $robots  = Robots::getInstance();
+        $robots  = new Robots();
         $value = 'https://www.example.ru';
 
         $this->assertStringNotContainsString($value, $robots->render());
@@ -17,7 +17,7 @@ class RobotTest extends TestCase
 
     public function testSiteMapHost()
     {
-        $robots  = Robots::getInstance();
+        $robots  = new Robots();
         $value = 'https://www.example.ru/site/map.xml';
         $this->assertStringNotContainsString($value, $robots->render());
 
@@ -27,7 +27,7 @@ class RobotTest extends TestCase
 
     public function testCleanParams()
     {
-        $robots  = Robots::getInstance();
+        $robots  = new Robots();
 
         $value = '&param&param2';
         $this->assertStringNotContainsString($value, $robots->render());
@@ -38,7 +38,7 @@ class RobotTest extends TestCase
 
     public function testCrawlDelayHost()
     {
-       $robots  = Robots::getInstance();
+        $robots  = new Robots();
 
        $value = 2525;
        $this->assertStringNotContainsString($value, $robots->render());
@@ -49,7 +49,7 @@ class RobotTest extends TestCase
 
     public function testDisallow()
     {
-       $robots  = Robots::getInstance();
+        $robots  = new Robots();
        $value = '/path/contact';
        $this->assertStringNotContainsString($value, $robots->render());
 
@@ -59,7 +59,7 @@ class RobotTest extends TestCase
 
     public function testAllow()
     {
-       $robots  = Robots::getInstance();
+       $robots  = new Robots();
        $value = '/path/contact';
        $this->assertStringNotContainsString($value, $robots->render());
 
