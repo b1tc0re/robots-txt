@@ -79,6 +79,17 @@ class Robots implements IRobot
     }
 
     /**
+     * Удалить все ссылки на файл SiteMap в файл robots.txt.
+     *
+     * @return IRobot
+     */
+    public function cleanSiteMap() : IRobot
+    {
+        $this->storage->cleanSiteMap();
+        return $this;
+    }
+
+    /**
      * Добавить GET-параметры (например, идентификаторы сессий, пользователей) или метки (напрмиер, UTM), которые не влияют на их содержимое.
      *
      * @param array $params

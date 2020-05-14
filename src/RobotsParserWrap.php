@@ -138,6 +138,16 @@ class RobotsParserWrap extends \RobotsTxtParser
     }
 
     /**
+     * Remove all sitemap
+     * @return $this
+     */
+    public function cleanSiteMap()
+    {
+        $this->sitemap = [];
+        return $this;
+    }
+
+    /**
      * Extend clean params
      * @param array $params
      *
