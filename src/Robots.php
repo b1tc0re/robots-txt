@@ -67,6 +67,18 @@ class Robots implements IRobot
     }
 
     /**
+     * Удалить ссылку на файл SiteMap в файл robots.txt.
+     *
+     * @param string|array $siteMap
+     * @return IRobot
+     */
+    public function removeSiteMap($siteMap) : IRobot
+    {
+        $this->storage->removeSiteMap($siteMap);
+        return $this;
+    }
+
+    /**
      * Добавить GET-параметры (например, идентификаторы сессий, пользователей) или метки (напрмиер, UTM), которые не влияют на их содержимое.
      *
      * @param array $params
@@ -198,8 +210,7 @@ class Robots implements IRobot
      */
     public function update(string $path = 'robots.txt')
     {
-        if( file_exists($path) )
-        {
+        if( file_exists($path) ) {
             unlink($path);
         }
 

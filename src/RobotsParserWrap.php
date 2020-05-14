@@ -115,6 +115,29 @@ class RobotsParserWrap extends \RobotsTxtParser
     }
 
     /**
+     * Remove sitemap
+     * @param string $sitemap
+     * @return $this
+     */
+    public function removeSiteMap(string $sitemap)
+    {
+        if ( filter_var($sitemap, FILTER_VALIDATE_URL) && $parsed = $this->parseURL($sitemap) )
+        {
+            if( in_array( pathinfo ($parsed['path'], PATHINFO_EXTENSION ), ['xml', 'gz']) )
+            {
+                $sitemap = $parsed['scheme'] . '://' . $parsed['host'] . '/' . ltrim($parsed['path'],'/') ;
+
+                if(($key = array_search($sitemap, $this->sitemap)) !== FALSE)
+                {
+                    unset($this->sitemap[$key]);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Extend clean params
      * @param array $params
      *

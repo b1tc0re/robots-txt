@@ -26,6 +26,14 @@ interface IRobot
     public function siteMap($siteMap) : IRobot;
 
     /**
+     * Удалить ссылку на файл SiteMap в файл robots.txt.
+     *
+     * @param string|array $siteMap
+     * @return IRobot
+     */
+    public function removeSiteMap($siteMap) : IRobot;
+
+    /**
      * Добавить GET-параметры (например, идентификаторы сессий, пользователей) или метки (напрмиер, UTM), которые не влияют на их содержимое.
      *
      * @param array $params
