@@ -71,12 +71,12 @@ class RobotsParserWrap extends \RobotsTxtParser
 
     /**
      * Удалить правило
-     * @param string $directory
-     * @param string $directoryRule
+     * @param string $directory     - Адрес
+     * @param string $directoryRule - Правило
      *
      * @return $this
      */
-    public function removeRole(string $directory, string $directoryRule)
+    public function removeRule(string $directory, string $directoryRule)
     {
         if( count($this->rules) === 0 )
         {
@@ -85,12 +85,11 @@ class RobotsParserWrap extends \RobotsTxtParser
 
         foreach ($this->getRules() ?? [] as $userAgent => $rules)
         {
-            if( array_key_exists($directoryRule, $rules) && array_key_exists($directory, $rules[$directoryRule]))
+            if( array_key_exists($directoryRule, $this->rules[$userAgent]) && $index = array_search($directory, $this->rules[$userAgent][$directoryRule]) )
             {
-
+                unset($this->rules[$userAgent][$directoryRule][$index]);
             }
         }
-
 
         return $this;
     }

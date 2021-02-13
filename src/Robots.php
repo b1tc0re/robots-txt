@@ -165,15 +165,27 @@ class Robots implements IRobot
     }
 
     /**
-     * Добавить правило запрета в файл robots.txt. для $agent
+     * Добавить правило запрета для роботов
      * @param string $agent
      * @param string $directory
      * @return IRobot
      */
-    public function disallowForAgent(string $agent,string $directory) : IRobot
+    public function disallowForAgent(string $agent, string $directory) : IRobot
     {
         $this->storage->addRuleForAgent($agent, $this->directoryNormalize($directory), 'Disallow');
         return $this;
+    }
+
+    /**
+     * Удалить правило запрета для роботов
+     * @param string|array ...$directories
+     */
+    public function disallowRemove(...$directories)
+    {
+        foreach ((array) $directories as $directory)
+        {
+            $this->storage->removeRule($this->directoryNormalize($directory), 'disallow');
+        }
     }
 
     /**
