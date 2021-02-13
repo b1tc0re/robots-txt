@@ -238,7 +238,7 @@ class Robots implements IRobot
     protected function directoryNormalize(string $directory)
     {
         $directory = '/' . trim($directory, '/') . '/';
-        return $directory;
+        return preg_replace('#(^|[^:])//+#', '\\1/', $directory);
     }
 
     /**

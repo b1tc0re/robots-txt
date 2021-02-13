@@ -70,6 +70,32 @@ class RobotsParserWrap extends \RobotsTxtParser
     }
 
     /**
+     * Удалить правило
+     * @param string $directory
+     * @param string $directoryRule
+     *
+     * @return $this
+     */
+    public function removeRole(string $directory, string $directoryRule)
+    {
+        if( count($this->rules) === 0 )
+        {
+            $this->rules['*'] = [];
+        }
+
+        foreach ($this->getRules() ?? [] as $userAgent => $rules)
+        {
+            if( array_key_exists($directoryRule, $rules) && array_key_exists($directory, $rules[$directoryRule]))
+            {
+
+            }
+        }
+
+
+        return $this;
+    }
+
+    /**
      * Set host
      *
      * @param string $host
