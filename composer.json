@@ -15,8 +15,8 @@
     }
   ],
   "require": {
-    "php": "^7.0",
-    "t1gor/robots-txt-parser": "v0.2.4",
+    "php": ">=7.2",
+    "t1gor/robots-txt-parser": "v0.2.5",
     "ext-mbstring": "*"
   },
   "require-dev": {
