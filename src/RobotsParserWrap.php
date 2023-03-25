@@ -214,7 +214,7 @@ class RobotsParserWrap extends \RobotsTxtParser
                 if (is_array($value)) {
                     // Shorter paths later
                     usort($value, function ($a, $b) {
-                        return mb_strlen($a) < mb_strlen($b);
+                        return mb_strlen($a) < mb_strlen($b) ? 1 : 0;
                     });
                     foreach ($value as $subValue) {
                         $output[] = $directive . ': ' . $subValue;
