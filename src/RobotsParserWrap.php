@@ -1,6 +1,8 @@
-<?php  namespace DeftCMS\Components\b1tc0re\Robots;
+<?php namespace DeftCMS\Components\b1tc0re\Robots;
 
-class RobotsParserWrap extends \RobotsTxtParser
+use RobotsTxtParser;
+
+class RobotsParserWrap extends RobotsTxtParser
 {
     /**
      * Add new rule for user agent
@@ -10,24 +12,18 @@ class RobotsParserWrap extends \RobotsTxtParser
      *
      * @return $this
      */
-    public function addRuleForAgent(string $agent, string $directory, string $directoryRule)
+    public function addRuleForAgent(string $agent, string $directory, string $directoryRule): self
     {
-        if( !array_key_exists($agent, $this->rules) )
-        {
+        if (!array_key_exists($agent, $this->rules)) {
             $this->rules[$agent] = [];
         }
 
-        foreach ($this->getRules($agent) ?? [] as $rules)
-        {
-            if( array_key_exists($directoryRule, $rules) )
-            {
-                if( !in_array($directory, $rules[$directoryRule]) )
-                {
+        foreach ($this->getRules($agent) ?? [] as $rules) {
+            if (array_key_exists($directoryRule, $rules)) {
+                if (!in_array($directory, $rules[$directoryRule])) {
                     $this->rules[$agent][$directoryRule][] = $directory;
                 }
-            }
-            else
-            {
+            } else {
                 $this->rules[$agent][$directoryRule][] = $directory;
             }
         }
@@ -43,24 +39,18 @@ class RobotsParserWrap extends \RobotsTxtParser
      *
      * @return $this
      */
-    public function addRule(string $directory, string $directoryRule)
+    public function addRule(string $directory, string $directoryRule): self
     {
-        if( count($this->rules) === 0 )
-        {
+        if (count($this->rules) === 0) {
             $this->rules['*'] = [];
         }
 
-        foreach ($this->getRules() ?? [] as $userAgent => $rules)
-        {
-            if( array_key_exists($directoryRule, $rules) )
-            {
-                if( !in_array($directory, $rules[$directoryRule]) )
-                {
+        foreach ($this->getRules() ?? [] as $userAgent => $rules) {
+            if (array_key_exists($directoryRule, $rules)) {
+                if (!in_array($directory, $rules[$directoryRule])) {
                     $this->rules[$userAgent][$directoryRule][] = $directory;
                 }
-            }
-            else
-            {
+            } else {
                 $this->rules[$userAgent][$directoryRule][] = $directory;
             }
         }
@@ -71,22 +61,19 @@ class RobotsParserWrap extends \RobotsTxtParser
 
     /**
      * Удалить правило
-     * @param string $directory     - Адрес
+     * @param string $directory - Адрес
      * @param string $directoryRule - Правило
      *
      * @return $this
      */
-    public function removeRule(string $directory, string $directoryRule)
+    public function removeRule(string $directory, string $directoryRule): self
     {
-        if( count($this->rules) === 0 )
-        {
+        if (count($this->rules) === 0) {
             $this->rules['*'] = [];
         }
 
-        foreach ($this->getRules() ?? [] as $userAgent => $rules)
-        {
-            if( array_key_exists($directoryRule, $this->rules[$userAgent]) && $index = array_search($directory, $this->rules[$userAgent][$directoryRule]) )
-            {
+        foreach ($this->getRules() ?? [] as $userAgent => $rules) {
+            if (array_key_exists($directoryRule, $this->rules[$userAgent]) && $index = array_search($directory, $this->rules[$userAgent][$directoryRule])) {
                 unset($this->rules[$userAgent][$directoryRule][$index]);
             }
         }
@@ -101,12 +88,10 @@ class RobotsParserWrap extends \RobotsTxtParser
      *
      * @return $this
      */
-    public function setHost(string $host)
+    public function setHost(string $host): self
     {
-        if (filter_var($host, FILTER_VALIDATE_URL))
-        {
-            if( $parsed = $this->parseURL($host) )
-            {
+        if (filter_var($host, FILTER_VALIDATE_URL)) {
+            if ($parsed = $this->parseURL($host)) {
                 $this->host = $parsed['scheme'] . '://' . $parsed['host'] . '/';
             }
         }
@@ -121,16 +106,13 @@ class RobotsParserWrap extends \RobotsTxtParser
      *
      * @return $this
      */
-    public function addSiteMap(string $sitemap)
+    public function addSiteMap(string $sitemap): self
     {
-        if ( filter_var($sitemap, FILTER_VALIDATE_URL) && $parsed = $this->parseURL($sitemap) )
-        {
-            if( in_array( pathinfo ($parsed['path'], PATHINFO_EXTENSION ), ['xml', 'gz']) )
-            {
-                $sitemap = $parsed['scheme'] . '://' . $parsed['host'] . '/' . ltrim($parsed['path'],'/') ;
+        if (filter_var($sitemap, FILTER_VALIDATE_URL) && $parsed = $this->parseURL($sitemap)) {
+            if (in_array(pathinfo($parsed['path'], PATHINFO_EXTENSION), ['xml', 'gz'])) {
+                $sitemap = $parsed['scheme'] . '://' . $parsed['host'] . '/' . ltrim($parsed['path'], '/');
 
-                if( !in_array($sitemap, $this->sitemap) )
-                {
+                if (!in_array($sitemap, $this->sitemap)) {
                     $this->sitemap[] = $sitemap;
                 }
             }
@@ -144,16 +126,13 @@ class RobotsParserWrap extends \RobotsTxtParser
      * @param string $sitemap
      * @return $this
      */
-    public function removeSiteMap(string $sitemap)
+    public function removeSiteMap(string $sitemap): self
     {
-        if ( filter_var($sitemap, FILTER_VALIDATE_URL) && $parsed = $this->parseURL($sitemap) )
-        {
-            if( in_array( pathinfo ($parsed['path'], PATHINFO_EXTENSION ), ['xml', 'gz']) )
-            {
-                $sitemap = $parsed['scheme'] . '://' . $parsed['host'] . '/' . ltrim($parsed['path'],'/') ;
+        if (filter_var($sitemap, FILTER_VALIDATE_URL) && $parsed = $this->parseURL($sitemap)) {
+            if (in_array(pathinfo($parsed['path'], PATHINFO_EXTENSION), ['xml', 'gz'])) {
+                $sitemap = $parsed['scheme'] . '://' . $parsed['host'] . '/' . ltrim($parsed['path'], '/');
 
-                if(($key = array_search($sitemap, $this->sitemap)) !== FALSE)
-                {
+                if (($key = array_search($sitemap, $this->sitemap)) !== FALSE) {
                     unset($this->sitemap[$key]);
                 }
             }
@@ -166,7 +145,7 @@ class RobotsParserWrap extends \RobotsTxtParser
      * Remove all sitemap
      * @return $this
      */
-    public function cleanSiteMap()
+    public function cleanSiteMap(): self
     {
         $this->sitemap = [];
         return $this;
@@ -178,18 +157,16 @@ class RobotsParserWrap extends \RobotsTxtParser
      *
      * @return $this
      */
-    public function addCleanParams(array $params)
+    public function addCleanParams(array $params): self
     {
         $parameters = $this->getCleanParam();
 
-        if( !count($parameters) )
-        {
+        if (!count($parameters)) {
             $this->cleanparam['/*'] = [];
         }
 
-        foreach ($this->getCleanParam() ?? [] as $index => $p )
-        {
-            $this->cleanparam[$index] = array_merge($this->cleanparam[$index], $params );
+        foreach ($this->getCleanParam() ?? [] as $index => $p) {
+            $this->cleanparam[$index] = array_merge($this->cleanparam[$index], $params);
         }
 
         return $this;
@@ -201,7 +178,7 @@ class RobotsParserWrap extends \RobotsTxtParser
      * @param string $eol
      * @return string
      */
-    public function render($eol = "\r\n")
+    public function render($eol = "\r\n"): string
     {
         $input = $this->getRules();
         krsort($input);
@@ -236,11 +213,9 @@ class RobotsParserWrap extends \RobotsTxtParser
             $output[] = 'Sitemap: ' . $sitemap;
         }
 
-        foreach ($this->getCleanParam() ?? [] as $path)
-        {
+        foreach ($this->getCleanParam() ?? [] as $path) {
             $output[] = 'Clean-param: ' . implode('&', $path);
         }
-
 
         $output[] = '';
         return implode($eol, $output);

@@ -1,4 +1,4 @@
-<?php  namespace DeftCMS\Components\b1tc0re\Robots;
+<?php namespace DeftCMS\Components\b1tc0re\Robots;
 
 use Closure;
 
@@ -9,23 +9,23 @@ class Robots implements IRobot
      *
      * @var RobotsParserWrap
      */
-    protected $storage;
+    private RobotsParserWrap $storage;
 
     /**
      * Статический экземпляр класса
      *
-     * @var Robots
+     * @var null|Robots
      */
-    protected static $_instance;
+    private static ?Robots $_instance;
 
     /**
      * Метод возврата статического экземпляра
      *
+     * @return $this
      * @uses $robots = Robots::getInstance();
      *
-     * @return $this
      */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         self::$_instance || (self::$_instance = new static());
         return self::$_instance;
@@ -47,7 +47,7 @@ class Robots implements IRobot
      * @param string $host
      * @return IRobot
      */
-    public function host($host) : IRobot
+    public function host(string $host): IRobot
     {
         $this->storage->setHost($host);
         return $this;
@@ -60,7 +60,7 @@ class Robots implements IRobot
      * @return IRobot
      *
      */
-    public function siteMap($siteMap) : IRobot
+    public function siteMap(...$siteMap): IRobot
     {
         $this->storage->addSitemap($siteMap);
         return $this;
@@ -72,7 +72,7 @@ class Robots implements IRobot
      * @param string|array $siteMap
      * @return IRobot
      */
-    public function removeSiteMap($siteMap) : IRobot
+    public function removeSiteMap(...$siteMap): IRobot
     {
         $this->storage->removeSiteMap($siteMap);
         return $this;
@@ -83,7 +83,7 @@ class Robots implements IRobot
      *
      * @return IRobot
      */
-    public function cleanSiteMap() : IRobot
+    public function cleanSiteMap(): IRobot
     {
         $this->storage->cleanSiteMap();
         return $this;
@@ -95,7 +95,7 @@ class Robots implements IRobot
      * @param array $params
      * @return IRobot
      */
-    public function cleanParams(array $params) : IRobot
+    public function cleanParams(array $params): IRobot
     {
         $this->storage->addCleanParams($params);
         return $this;
@@ -108,10 +108,9 @@ class Robots implements IRobot
      * @param string $type
      * @return IRobot
      */
-    public function crawlDelay($seconds, $type = 'crawl-delay') : IRobot
+    public function crawlDelay(float|int $seconds, string $type = 'crawl-delay'): IRobot
     {
-        switch (mb_strtolower($type))
-        {
+        switch (mb_strtolower($type)) {
             case 'cache':
             case 'cache-delay':
                 // non-standard directive
@@ -132,20 +131,14 @@ class Robots implements IRobot
      * @param string $type
      * @return IRobot
      */
-    public function crawlDelayForAgent(string $agent, $seconds, $type = 'crawl-delay') : IRobot
+    public function crawlDelayForAgent(string $agent, int|float $seconds, string $type = 'crawl-delay'): IRobot
     {
-        switch (mb_strtolower($type))
-        {
-            case 'cache':
-            case 'cache-delay':
-                // non-standard directive
-                $directive = RobotsParserWrap::DIRECTIVE_CACHE_DELAY;
-                break;
-            default:
-                $directive = RobotsParserWrap::DIRECTIVE_CRAWL_DELAY;
-        }
+        $directive = match (mb_strtolower($type)) {
+            'cache', 'cache-delay' => RobotsParserWrap::DIRECTIVE_CACHE_DELAY,
+            default => RobotsParserWrap::DIRECTIVE_CRAWL_DELAY,
+        };
 
-        $this->storage->addRuleForAgent($agent,$seconds, $directive);
+        $this->storage->addRuleForAgent($agent, $seconds, $directive);
         return $this;
     }
 
@@ -154,10 +147,9 @@ class Robots implements IRobot
      * @param string|array ...$directories
      * @return IRobot
      */
-    public function disallow(...$directories) : IRobot
+    public function disallow(...$directories): IRobot
     {
-        foreach ((array) $directories as $directory)
-        {
+        foreach ((array)$directories as $directory) {
             $this->storage->addRule($this->directoryNormalize($directory), 'disallow');
         }
 
@@ -170,7 +162,7 @@ class Robots implements IRobot
      * @param string $directory
      * @return IRobot
      */
-    public function disallowForAgent(string $agent, string $directory) : IRobot
+    public function disallowForAgent(string $agent, string $directory): IRobot
     {
         $this->storage->addRuleForAgent($agent, $this->directoryNormalize($directory), 'Disallow');
         return $this;
@@ -182,8 +174,7 @@ class Robots implements IRobot
      */
     public function disallowRemove(...$directories)
     {
-        foreach ((array) $directories as $directory)
-        {
+        foreach ((array)$directories as $directory) {
             $this->storage->removeRule($this->directoryNormalize($directory), 'disallow');
         }
     }
@@ -194,10 +185,9 @@ class Robots implements IRobot
      * @param string|array $directories
      * @return IRobot
      */
-    public function allow(...$directories) : IRobot
+    public function allow(...$directories): IRobot
     {
-        foreach ((array) $directories as $directory)
-        {
+        foreach ((array)$directories as $directory) {
             $this->storage->addRule($this->directoryNormalize($directory), 'Allow');
         }
 
@@ -210,7 +200,7 @@ class Robots implements IRobot
      * @param string $directory
      * @return IRobot
      */
-    public function allowForAgent(string $agent,string $directory) : IRobot
+    public function allowForAgent(string $agent, string $directory): IRobot
     {
         $this->storage->addRuleForAgent($agent, $this->directoryNormalize($directory), 'Allow');
 
@@ -221,7 +211,7 @@ class Robots implements IRobot
      * Generate the robots.txt and return content
      * @return string
      */
-    public function render() : string
+    public function render(): string
     {
         return $this->storage->render();
     }
@@ -230,10 +220,12 @@ class Robots implements IRobot
      * Обновить данные robots.txt
      *
      * @param string $path
+     *
+     * @return void
      */
-    public function update(string $path = 'robots.txt')
+    public function update(string $path = 'robots.txt'): void
     {
-        if( file_exists($path) ) {
+        if (file_exists($path)) {
             unlink($path);
         }
 
@@ -247,7 +239,7 @@ class Robots implements IRobot
      *
      * @return string
      */
-    protected function directoryNormalize(string $directory)
+    private function directoryNormalize(string $directory): string
     {
         $directory = '/' . trim($directory, '/') . '/';
         return preg_replace('#(^|[^:])//+#', '\\1/', $directory);
@@ -258,10 +250,9 @@ class Robots implements IRobot
      * @param string $content
      * @return RobotsParserWrap
      */
-    protected function getRobotsStorage(string $content)
+    private function getRobotsStorage(string $content): RobotsParserWrap
     {
-        if( is_file($content) || filter_var($content, FILTER_VALIDATE_URL) )
-        {
+        if (is_file($content) || filter_var($content, FILTER_VALIDATE_URL)) {
             $content = file_get_contents($content);
         }
 
